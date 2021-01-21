@@ -1,3 +1,4 @@
+docopt
 lightgbm
 mlflow
 numpy

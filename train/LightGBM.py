@@ -16,7 +16,7 @@ class LightGBMTrainer:
 
 
     def optimize_hyperparameters(self, df: pd.DataFrame, feature_col: list, target_col: str, output_file: str) -> dict:
-        df_train, df_valid = train_test_split(df, test_size=0.15, random_state=self.random_state)
+        df_train, df_valid = train_test_split(df, test_size=0.1, random_state=self.random_state)
         X_train, y_train = df_train[feature_col], df_train[target_col]
         X_valid, y_valid = df_valid[feature_col], df_valid[target_col]
         logging.info(f'Train/valid split: {X_train.shape[0]} for training, {X_valid.shape[0]} for validation')
