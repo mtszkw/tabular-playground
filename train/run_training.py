@@ -1,7 +1,7 @@
 """Training.
 
 Usage:
-  run_training.py --seed=<seed> --folds=<folds> [--lightgbm] [--tabnet] [--quick] [--skip_hpo]
+  run_training.py --seed=<seed> --folds=<folds> --input=<input> [--lightgbm] [--tabnet] [--quick] [--skip_hpo]
   run_training.py (-h | --help)
   run_training.py --version
 
@@ -10,6 +10,7 @@ Options:
   --version         Show version.
   --seed=<seed>     Random state seed [default: 42].
   --folds=<folds>   Number of CV folds [default: 5].
+  --input=<input>   Input directory with CSV files.
   --lightgbm        LightGBM training.
   --tabnet          TabNet training.
   --quick           Quick run with only short subset of data used.
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     if not any([arguments['--lightgbm'], arguments['--tabnet']]):
         logging.error('Both LightGBM and TabNet are disabled, doing nothing.')
 
-    (df, df_test) = read_train_test_data(dir='./input/tabular-playground-series-jan-2021', quick=arguments['--quick'])
+    (df, df_test) = read_train_test_data(dir=arguments['--input'], quick=arguments['--quick'])
     print(df.head(), df.shape)
 
     target_col  = 'target'
@@ -57,7 +58,7 @@ if __name__ == "__main__":
             lgbm_rmse, lgbm_preds = lgbm_trainer.crossval_and_predict(int(arguments['--folds']), df, df_test, feature_col, target_col, lgbm_params)
             logging.info(f'LightGBM RMSE on training data = {np.round(lgbm_rmse, 7)}')
 
-            df_sub = pd.read_csv('./input/tabular-playground-series-jan-2021/sample_submission.csv')
+            df_sub = pd.read_csv(os.path.join(arguments['--input'], 'sample_submission.csv'))
             df_sub['target'] = lgbm_preds
             df_sub.to_csv("lightGBM_submission.csv", index=False)
 
@@ -82,7 +83,7 @@ if __name__ == "__main__":
             tabnet_rmse, tabnet_preds = tabnet.crossval_and_predict(int(arguments['--folds']), df, df_test, feature_col, target_col, tabnet_params)
             logging.info(f'TabNet RMSE on training data = {np.round(tabnet_rmse, 7)}')
 
-            df_sub = pd.read_csv('./input/tabular-playground-series-jan-2021/sample_submission.csv')
+            df_sub = pd.read_csv(os.path.join(arguments['--input'], 'sample_submission.csv'))
             df_sub['target'] = tabnet_preds
             df_sub.to_csv("tabnet_submission.csv", index=False)
 
