@@ -33,10 +33,6 @@ from TabNet import TabNetTrainer
 
 if __name__ == "__main__":
     logging.basicConfig(format='[%(asctime)s] %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
-
-    print(torch.cuda.is_available())
-    # torch.cuda.set_device(0)
-    raise Exception()
     
     arguments = docopt(__doc__, version='Tabular Playground 1.0')
     logging.info(arguments)
